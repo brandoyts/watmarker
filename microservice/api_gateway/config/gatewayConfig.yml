@@ -1,0 +1,6 @@
+address: localhost:8080
+logLevel: info
+services:
+  - name: watermark-service
+    prefix: /watermark
+    url: http://localhost:6000
