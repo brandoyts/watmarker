@@ -19,3 +19,12 @@ mocks:
 	@echo "🔧 Generating mocks with go:generate..."
 	go generate ./...
 	@echo "✅ Mock generation complete!"
+
+
+push api gateway image:
+	docker build -t doyts/watmarker-api-gateway -f microservice/api_gateway/Dockerfile .
+	docker push doyts/watmarker-api-gateway
+
+push watermark image:
+	docker build -t doyts/watmarker-watermark -f microservice/watermark_service/Dockerfile .
+	docker push doyts/watmarker-watermark
