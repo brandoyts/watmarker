@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: api-gateway
+    env: docker
+    plan: starter
+    dockerfilePath: ./microservice/api_gateway/Dockerfile
+    dockerContext: .
+    ports:
+      - 8080
+
+  - type: web
+    name: watermark-service
+    env: docker
+    plan: starter
+    dockerfilePath: ./microservice/watermark_service/Dockerfile
+    dockerContext: .
+    ports:
+      - 6000
