@@ -6,7 +6,7 @@ services:
     image:
       url: docker.io/doyts/watmarker-api-gateway:latest
 
-  - type: web
+  - type: pserv
     plan: free
     name: watermark-service
     runtime: image
