@@ -23,8 +23,8 @@ const (
 
 type ApplyWatermarkRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Text          string                 `protobuf:"bytes,1,opt,name=text,proto3" json:"text,omitempty"`
-	Size          int32                  `protobuf:"varint,2,opt,name=size,proto3" json:"size,omitempty"`
+	WatermarkText string                 `protobuf:"bytes,1,opt,name=watermark_text,json=watermarkText,proto3" json:"watermark_text,omitempty"`
+	ImageData     []byte                 `protobuf:"bytes,2,opt,name=image_data,json=imageData,proto3" json:"image_data,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -59,18 +59,18 @@ func (*ApplyWatermarkRequest) Descriptor() ([]byte, []int) {
 	return file_proto_watermark_watermark_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *ApplyWatermarkRequest) GetText() string {
+func (x *ApplyWatermarkRequest) GetWatermarkText() string {
 	if x != nil {
-		return x.Text
+		return x.WatermarkText
 	}
 	return ""
 }
 
-func (x *ApplyWatermarkRequest) GetSize() int32 {
+func (x *ApplyWatermarkRequest) GetImageData() []byte {
 	if x != nil {
-		return x.Size
+		return x.ImageData
 	}
-	return 0
+	return nil
 }
 
 type ApplyWatermarkResponse struct {
@@ -121,10 +121,11 @@ var File_proto_watermark_watermark_proto protoreflect.FileDescriptor
 
 const file_proto_watermark_watermark_proto_rawDesc = "" +
 	"\n" +
-	"\x1fproto/watermark/watermark.proto\x12\twatermark\"?\n" +
-	"\x15ApplyWatermarkRequest\x12\x12\n" +
-	"\x04text\x18\x01 \x01(\tR\x04text\x12\x12\n" +
-	"\x04size\x18\x02 \x01(\x05R\x04size\"5\n" +
+	"\x1fproto/watermark/watermark.proto\x12\twatermark\"]\n" +
+	"\x15ApplyWatermarkRequest\x12%\n" +
+	"\x0ewatermark_text\x18\x01 \x01(\tR\rwatermarkText\x12\x1d\n" +
+	"\n" +
+	"image_data\x18\x02 \x01(\fR\timageData\"5\n" +
 	"\x16ApplyWatermarkResponse\x12\x1b\n" +
 	"\timage_url\x18\x01 \x01(\tR\bimageUrl2i\n" +
 	"\x10WatermarkService\x12U\n" +

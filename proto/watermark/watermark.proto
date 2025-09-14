@@ -9,8 +9,8 @@ service WatermarkService {
 }
 
 message ApplyWatermarkRequest {
-  string text = 1;
-  int32 size = 2;
+  string watermark_text = 1;
+  bytes image_data = 2;
 }
 
 message ApplyWatermarkResponse {
