@@ -20,7 +20,10 @@ func NewWatermarkController(service port.WatermarkService) *WatermarkController 
 }
 
 func (wc *WatermarkController) ApplyWatermark(ctx context.Context, request *pb.ApplyWatermarkRequest) (*pb.ApplyWatermarkResponse, error) {
-	res, err := wc.service.ApplyWatermark(ctx, request.Text, request.Size)
+	res, err := wc.service.ProcessImage(ctx, port.ProcessImageInput{
+		ImageData:     request.ImageData,
+		WatermarkText: request.WatermarkText,
+	})
 	if err != nil {
 		return nil, err
 	}

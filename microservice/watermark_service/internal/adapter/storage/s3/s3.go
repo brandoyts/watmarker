@@ -1,6 +1,5 @@
 package s3
 
-//go:generate mockgen -package s3 -source=s3.go -destination=s3_mock_test.go
 import (
 	"bytes"
 	"context"
@@ -12,6 +11,8 @@ import (
 )
 
 // this is an internal interface for mocking aws sdk
+//
+//go:generate mockgen -package s3 -source=s3.go -destination=s3_mock.go
 type client interface {
 	PutObject(ctx context.Context, params *s3.PutObjectInput, optFns ...func(*s3.Options)) (*s3.PutObjectOutput, error)
 }
@@ -46,10 +47,11 @@ func New(config Configuration) *Instance {
 
 var _ port.ImageStorage = (*Instance)(nil)
 
-func (i *Instance) Upload(ctx context.Context, fileContent []byte) error {
+func (i *Instance) Upload(ctx context.Context, filename string, fileData []byte) error {
 	_, err := i.client.PutObject(ctx, &s3.PutObjectInput{
 		Bucket: &i.Bucket,
-		Body:   bytes.NewReader(fileContent),
+		Body:   bytes.NewReader(fileData),
+		Key:    &filename,
 	})
 
 	return err

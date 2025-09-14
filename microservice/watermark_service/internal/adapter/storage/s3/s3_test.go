@@ -36,7 +36,7 @@ func TestUpload_Success(t *testing.T) {
 			return &s3.PutObjectOutput{}, nil
 		})
 
-	err := instance.Upload(context.Background(), data)
+	err := instance.Upload(context.Background(), "", data)
 	require.NoError(t, err)
 }
 
@@ -55,6 +55,6 @@ func TestUpload_Error(t *testing.T) {
 		PutObject(gomock.Any(), gomock.Any()).
 		Return(nil, errors.New("upload failed"))
 
-	err := instance.Upload(context.Background(), []byte("test data"))
+	err := instance.Upload(context.Background(), "", []byte("test data"))
 	require.EqualError(t, err, "upload failed")
 }
