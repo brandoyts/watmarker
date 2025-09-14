@@ -1,8 +1,9 @@
 package logger
 
 import (
+	"errors"
 	"log"
-	"os"
+	"syscall"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -37,7 +38,14 @@ func NewLogger(config *Config) (*Logger, error) {
 }
 
 func (l *Logger) Sync() {
-	if err := l.SugaredLogger.Sync(); err != nil && err != os.ErrInvalid {
-		log.Printf("Failed to sync logger: %v", err)
+	err := l.SugaredLogger.Sync()
+	if err == nil {
+		return
 	}
+
+	if errors.Is(err, syscall.EINVAL) {
+		return
+	}
+
+	log.Printf("Failed to sync logger: %v", err)
 }
