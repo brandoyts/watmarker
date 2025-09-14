@@ -18,8 +18,11 @@ type GatewayConfig struct {
 	Services []Service `mapstructure:"services"`
 }
 
-func LoadGatewayConfig() GatewayConfig {
-	viper.AddConfigPath("../config/")
+func LoadGatewayConfig(path string) GatewayConfig {
+	viper.AddConfigPath(path)
+	viper.SetConfigName("gatewayConfig")
+	viper.SetConfigType("yml")
+
 	viper.SetConfigName("gatewayConfig")
 	viper.SetConfigType("yml")
 

@@ -22,10 +22,10 @@ func New(addr string) (*Client, error) {
 	return &Client{client: pb.NewWatermarkServiceClient(conn)}, nil
 }
 
-func (a *Client) ApplyWatermark(ctx context.Context, text string, size int32) (string, error) {
+func (a *Client) ApplyWatermark(ctx context.Context, text string, chunks []byte) (string, error) {
 	resp, err := a.client.ApplyWatermark(ctx, &pb.ApplyWatermarkRequest{
-		Text: text,
-		Size: size,
+		WatermarkText: text,
+		ImageData:     chunks,
 	})
 	if err != nil {
 		return "", err

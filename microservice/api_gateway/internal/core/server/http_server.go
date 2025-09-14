@@ -3,9 +3,6 @@ package server
 import (
 	"context"
 	"net/http"
-	"os"
-	"os/signal"
-	"syscall"
 
 	"github.com/brandoyts/watmarker/microservice/api_gateway/config"
 	"github.com/brandoyts/watmarker/pkg/common/ports/v1"
@@ -49,26 +46,14 @@ func (s *Server) RegisterHandler(path string, handler http.HandlerFunc) {
 }
 
 func (s *Server) Run() error {
-	go func() {
-		s.logger.Info("Starting API Gateway server on ", s.server.Addr)
-		if err := s.server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			s.logger.Error("Server failed to start: ", err)
-		}
-	}()
-
-	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
-
-	<-quit
-	s.logger.Info("Shutting down gracefully...")
-
-	ctx, cancel := context.WithTimeout(context.Background(), s.server.IdleTimeout)
-	defer cancel()
-
-	if err := s.server.Shutdown(ctx); err != nil {
+	err := s.server.ListenAndServe()
+	if err != nil && err != http.ErrServerClosed {
 		return err
 	}
 
-	s.logger.Info("Server exited successfully.")
 	return nil
+}
+
+func (s *Server) Shutdown(ctx context.Context) error {
+	return s.server.Shutdown(ctx)
 }

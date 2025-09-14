@@ -20,7 +20,7 @@ func NewWatermarkService(client port.WatermarkClient) *WatermarkService {
 
 func (ws *WatermarkService) ApplyWatermark(ctx context.Context, in request.ApplyWatermarkRequest) (response.ApplyWatermarkResponse, error) {
 
-	res, err := ws.client.ApplyWatermark(context.Background(), in.Text, in.Size)
+	res, err := ws.client.ApplyWatermark(context.Background(), in.WatermarkText, in.FileData)
 	if err != nil {
 		return response.ApplyWatermarkResponse{}, err
 	}

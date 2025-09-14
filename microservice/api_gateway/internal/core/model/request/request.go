@@ -1,6 +1,6 @@
 package request
 
 type ApplyWatermarkRequest struct {
-	Text string `json:"text"`
-	Size int32  `json:"size"`
+	WatermarkText string `json:"watermark_text"`
+	FileData      []byte `json:"file_data"`
 }

@@ -12,5 +12,5 @@ type WatermarkService interface {
 }
 
 type WatermarkClient interface {
-	ApplyWatermark(ctx context.Context, text string, size int32) (string, error)
+	ApplyWatermark(ctx context.Context, text string, size []byte) (string, error)
 }

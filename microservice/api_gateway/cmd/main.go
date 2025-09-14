@@ -1,8 +1,12 @@
 package main
 
 import (
+	"context"
 	"log"
 	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/brandoyts/watmarker/microservice/api_gateway/config"
 	"github.com/brandoyts/watmarker/microservice/api_gateway/internal/adapter/grpc/watermark_grpc_client"
@@ -14,7 +18,7 @@ import (
 
 func main() {
 	// load gateway configuration
-	gatewayConfig := config.LoadGatewayConfig()
+	gatewayConfig := config.LoadGatewayConfig("../../config")
 
 	// initialize logger
 	appLogger, err := logger.NewLogger(&logger.Config{LogLevel: "info"})
@@ -25,7 +29,7 @@ func main() {
 	defer appLogger.Sync()
 
 	// initialize watermark grpc client
-	watermarkGrpcClient, err := watermark_grpc_client.New(":6000")
+	watermarkGrpcClient, err := watermark_grpc_client.New(gatewayConfig.Services[0].Url)
 	if err != nil {
 		log.Fatalf("failed connecting to watermark grpc client: %v", err)
 	}
@@ -44,8 +48,28 @@ func main() {
 	srv.RegisterHandler("/health", controller.HealthCheck)
 	srv.RegisterHandler("/watermark", watermarkController.ServeHTTP)
 
-	err = srv.Run()
+	go func() {
+		appLogger.Info("Starting API Gateway server on ", gatewayConfig.Address)
+		err := srv.Run()
+		if err != nil {
+			appLogger.Error("Server failed to start: ", err)
+		}
+	}()
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
+
+	<-quit
+	appLogger.Info("Shutting down gracefully...")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+
+	err = srv.Shutdown(ctx)
 	if err != nil {
-		appLogger.Error("Failed to start api gateway: ", err)
+		appLogger.Error(err)
+		os.Exit(1)
 	}
+
+	appLogger.Info("Server exited successfully.")
 }

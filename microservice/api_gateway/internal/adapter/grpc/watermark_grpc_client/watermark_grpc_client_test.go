@@ -23,15 +23,13 @@ func (m *MockWatermarkClient) ApplyWatermark(ctx context.Context, in *pb.ApplyWa
 	return args.Get(0).(*pb.ApplyWatermarkResponse), args.Error(1)
 }
 
-// --- Tests ---
-
 func TestApplyWatermark_Success(t *testing.T) {
 	mockClient := new(MockWatermarkClient)
 	adapter := &Client{client: mockClient}
 
 	expectedReq := &pb.ApplyWatermarkRequest{
-		Text: "Hello",
-		Size: 42,
+		WatermarkText: "Hello",
+		ImageData:     nil,
 	}
 	expectedResp := &pb.ApplyWatermarkResponse{
 		ImageUrl: "http://test.com22",
@@ -39,7 +37,7 @@ func TestApplyWatermark_Success(t *testing.T) {
 
 	mockClient.On("ApplyWatermark", mock.Anything, expectedReq).Return(expectedResp, nil)
 
-	result, err := adapter.ApplyWatermark(context.Background(), "Hello", 42)
+	result, err := adapter.ApplyWatermark(context.Background(), "Hello", nil)
 
 	assert.NoError(t, err)
 	assert.Equal(t, "http://test.com22", result)
@@ -51,14 +49,14 @@ func TestApplyWatermark_Error(t *testing.T) {
 	adapter := &Client{client: mockClient}
 
 	expectedReq := &pb.ApplyWatermarkRequest{
-		Text: "Fail",
-		Size: 10,
+		WatermarkText: "Fail",
+		ImageData:     nil,
 	}
 	expectedErr := assert.AnError
 
 	mockClient.On("ApplyWatermark", mock.Anything, expectedReq).Return(&pb.ApplyWatermarkResponse{}, expectedErr)
 
-	result, err := adapter.ApplyWatermark(context.Background(), "Fail", 10)
+	result, err := adapter.ApplyWatermark(context.Background(), "Fail", nil)
 
 	assert.Error(t, err)
 	assert.Empty(t, result)
