@@ -1,0 +1,24 @@
+services:
+  api-gateway:
+    container_name: api-gateway
+    image: doyts/watmarker-api-gateway
+    build:
+      context: .
+      dockerfile: ./microservice/api_gateway/Dockerfile
+    ports:
+      - 8080:8080
+    env_file:
+      - path: ./microservice/api_gateway/.env
+        required: true
+
+  watermark:
+    container_name: watermark-service
+    image: doyts/watmarker-watermark
+    build:
+      context: .
+      dockerfile: ./microservice/watermark_service/Dockerfile
+    ports:
+      - 6000:6000
+    env_file:
+      - path: ./microservice/watermark_service/.env
+        required: true
