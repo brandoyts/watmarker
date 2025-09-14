@@ -3,7 +3,6 @@ package controller
 import (
 	"encoding/json"
 	"io"
-	"log"
 	"net/http"
 
 	"github.com/brandoyts/watmarker/microservice/api_gateway/internal/core/model/request"
@@ -40,7 +39,6 @@ func (h *WatermarkController) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	fileBytes, err := io.ReadAll(file)
 	if err != nil {
 		http.Error(w, "internal server error", http.StatusInternalServerError)
-		log.Printf("Error reading file content: %v", err)
 		return
 	}
 
@@ -50,10 +48,14 @@ func (h *WatermarkController) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	})
 	if err != nil {
 		http.Error(w, "failed to process the image", http.StatusInternalServerError)
-		log.Printf("failed to process the image: %v", err)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(res)
+
+	err = json.NewEncoder(w).Encode(res)
+	if err != nil {
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
 }
