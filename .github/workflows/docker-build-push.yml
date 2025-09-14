@@ -53,7 +53,7 @@ jobs:
         if: steps.filter.outputs.watermark_service == 'true' || steps.filter.outputs.common_code == 'true'
         uses: docker/build-push-action@v5
         with:
-          context: ./microservice/watermark_service
+          context: .
           file: ./microservice/watermark_service/Dockerfile
           push: true
           tags: |
