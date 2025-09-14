@@ -42,7 +42,8 @@ jobs:
         if: steps.filter.outputs.api_gateway == 'true' || steps.filter.outputs.common_code == 'true'
         uses: docker/build-push-action@v5
         with:
-          context: ./microservice/api_gateway
+          context: .
+          file: ./microservice/api_gateway/Dockerfile
           push: true
           tags: |
             ${{ secrets.DOCKER_HUB_USERNAME }}/api-gateway:latest
@@ -53,6 +54,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./microservice/watermark_service
+          file: ./microservice/watermark_service/Dockerfile
           push: true
           tags: |
             ${{ secrets.DOCKER_HUB_USERNAME }}/watermark-service:latest
