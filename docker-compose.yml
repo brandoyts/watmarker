@@ -7,9 +7,8 @@ services:
       dockerfile: ./microservice/api_gateway/Dockerfile
     ports:
       - 8080:8080
-    env_file:
-      - path: ./microservice/api_gateway/.env
-        required: true
+    volumes:
+      - ./microservice/api_gateway/.env:/.env
 
   watermark:
     container_name: watermark-service
@@ -19,6 +18,5 @@ services:
       dockerfile: ./microservice/watermark_service/Dockerfile
     ports:
       - 6000:6000
-    env_file:
-      - path: ./microservice/watermark_service/.env
-        required: true
+    volumes:
+      - ./microservice/watermark_service/.env:/.env
