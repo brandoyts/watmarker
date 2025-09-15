@@ -46,8 +46,8 @@ jobs:
           file: ./microservice/api_gateway/Dockerfile
           push: true
           tags: |
-            ${{ secrets.DOCKER_HUB_USERNAME }}/api-gateway:latest
-            ${{ secrets.DOCKER_HUB_USERNAME }}/api-gateway:${{ github.sha }}
+            ${{ secrets.DOCKER_HUB_USERNAME }}/watmarker-api-gateway:latest
+            ${{ secrets.DOCKER_HUB_USERNAME }}/watmarker-api-gateway:${{ github.sha }}
 
       - name: Build and Push Watermark Service
         if: steps.filter.outputs.watermark_service == 'true' || steps.filter.outputs.common_code == 'true'
@@ -57,5 +57,5 @@ jobs:
           file: ./microservice/watermark_service/Dockerfile
           push: true
           tags: |
-            ${{ secrets.DOCKER_HUB_USERNAME }}/watermark-service:latest
-            ${{ secrets.DOCKER_HUB_USERNAME }}/watermark-service:${{ github.sha }}
+            ${{ secrets.DOCKER_HUB_USERNAME }}/watmarker-watermark:latest
+            ${{ secrets.DOCKER_HUB_USERNAME }}/watmarker-watermark:${{ github.sha }}
