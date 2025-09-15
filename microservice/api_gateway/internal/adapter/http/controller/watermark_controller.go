@@ -5,8 +5,8 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/brandoyts/watmarker/microservice/api_gateway/internal/core/model/request"
-	"github.com/brandoyts/watmarker/microservice/api_gateway/internal/core/port"
+	"github.com/brandoyts/watmarker/microservice/api_gateway/internal/model/request"
+	"github.com/brandoyts/watmarker/microservice/api_gateway/internal/port"
 )
 
 type WatermarkController struct {

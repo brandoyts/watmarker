@@ -1,36 +1,31 @@
-package server
+package http
 
 import (
 	"context"
 	"net/http"
 
-	"github.com/brandoyts/watmarker/microservice/api_gateway/config"
-	"github.com/brandoyts/watmarker/pkg/common/ports/v1"
+	"github.com/brandoyts/watmarker/microservice/api_gateway/internal/adapter/http/middleware"
 )
 
 type Server struct {
-	logger      ports.Logger
 	router      *http.ServeMux
 	server      *http.Server
-	middlewares []Middleware
+	middlewares []middleware.Middleware
 }
 
-func NewServer(config config.GatewayConfig, logger ports.Logger) *Server {
+func NewServer(address string) *Server {
 	router := http.NewServeMux()
 
-	httpServer := &http.Server{
-		Addr:    config.Address,
-		Handler: router,
-	}
-
 	return &Server{
-		logger: logger,
 		router: router,
-		server: httpServer,
+		server: &http.Server{
+			Addr:    address,
+			Handler: router,
+		},
 	}
 }
 
-func (s *Server) Use(m Middleware) {
+func (s *Server) Use(m middleware.Middleware) {
 	s.middlewares = append(s.middlewares, m)
 }
 
