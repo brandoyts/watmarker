@@ -42,7 +42,6 @@ func main() {
 	if err != nil {
 		panic("failed to initialize logger: " + err.Error())
 	}
-	defer appLoger.Sync()
 
 	// initialize cache provider
 	redisCache, err := cache.NewRedisClient(cache.RedisClientConfig{
