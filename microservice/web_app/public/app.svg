@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Watmarker icon">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#4FC3F7"/>
+      <stop offset="50%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#6D28D9"/>
+    </linearGradient>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="6" stdDeviation="12" flood-color="#000" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Rounded square background -->
+  <rect x="16" y="16" width="480" height="480" rx="64" ry="64" fill="url(#g)" filter="url(#shadow)"/>
+
+  <!-- White W mark -->
+  <g transform="translate(0, -8)">
+    <path d="M150 340 L210 180 L260 300 L310 180 L370 340 L320 340 L290 240 L260 340 L230 240 L200 340 Z"
+          fill="#FFFFFF" transform="translate(0,-10) scale(0.9,0.9) translate(26,20)"/>
+  </g>
+
+  <!-- Optional subtle overlay for depth -->
+  <rect x="16" y="16" width="480" height="480" rx="64" ry="64" fill="white" opacity="0.03"/>
+</svg>
