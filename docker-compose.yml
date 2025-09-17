@@ -20,3 +20,15 @@ services:
       - 6000:6000
     volumes:
       - ./microservice/watermark_service/.env:/.env
+
+  web-app:
+    container_name: web-app
+    image: doyts/watmarker-web-app
+    build:
+      context: ./microservice/web_app
+      dockerfile: dev.Dockerfile
+    ports:
+      - 3000:5173
+    volumes:
+      - /app/node_modules
+      - ./microservice/web_app/:/app
