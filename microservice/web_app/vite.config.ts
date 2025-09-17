@@ -16,5 +16,12 @@ export default defineConfig({
     },
     host: true,
     strictPort: true,
+    proxy: {
+      "/api": {
+        target: "http://api-gateway:8080",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, "")
+      },
+    },
   },
 })

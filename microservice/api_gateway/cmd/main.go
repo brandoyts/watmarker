@@ -68,6 +68,7 @@ func main() {
 	srv := http.NewServer(gatewayConfig.Address)
 
 	// middleware
+	srv.Use(middleware.Cors())
 	srv.Use(middleware.Log(appLoger))
 	srv.Use(middleware.RateLimit(redisCache, 10, time.Minute*5))
 
