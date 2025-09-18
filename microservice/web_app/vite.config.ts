@@ -1,38 +1,49 @@
-import { defineConfig } from 'vite'
-import path from "path"
-import react from '@vitejs/plugin-react-swc'
-import tailwindcss from "@tailwindcss/vite"
+import { defineConfig, loadEnv } from 'vite'
 
-export default defineConfig({
-  base: "./",
-  plugins: [react(), tailwindcss()],
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
+import path from 'path'
+import react from '@vitejs/plugin-react-swc'
+import tailwindcss from '@tailwindcss/vite'
+
+export default defineConfig(({ mode }) => {
+  // Load env variables for the current mode
+  const env = loadEnv(mode, process.cwd(), '')
+
+  return {
+    base: './',
+    plugins: [react(), tailwindcss()],
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, './src'),
+      },
+      dedupe: ['react', 'react-dom'],
     },
-    dedupe: ["react", "react-dom", "prop-types"]
-  },
-  optimizeDeps: {
-    include: ['react', 'react-dom', 'prop-types'],
-  },
-  server: {
-    watch: {
-      usePolling: true,
+    optimizeDeps: {
+      include: ['react', 'react-dom'],
     },
-    host: true,
-    strictPort: true,
-    proxy: {
-      "/api": {
-        target: process.env.VITE_API_BASE_URL,
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, "")
+    server: {
+      watch: {
+        usePolling: true,
+      },
+      host: true,
+      strictPort: true,
+      proxy: {
+        '/api': {
+          target: env.VITE_API_BASE_URL,
+          changeOrigin: true,
+          rewrite: (p) => p.replace(/^\/api/, ''),
+        },
       },
     },
-  },
-  build: {
-    rollupOptions: {},
-    // commonjsOptions: {
-    //   include: ["/node_modules/"]
-    // }
+    build: {
+      sourcemap: mode === 'production' ? false : true,
+      minify: 'esbuild',
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            react: ['react', 'react-dom'],
+          },
+        },
+      },
+    },
   }
 })
