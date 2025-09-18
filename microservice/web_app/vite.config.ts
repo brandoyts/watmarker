@@ -4,11 +4,16 @@ import react from '@vitejs/plugin-react-swc'
 import tailwindcss from "@tailwindcss/vite"
 
 export default defineConfig({
+  base: "./",
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+    dedupe: ["react", "react-dom", "prop-types"]
+  },
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'prop-types'],
   },
   server: {
     watch: {
@@ -24,4 +29,10 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    rollupOptions: {},
+    // commonjsOptions: {
+    //   include: ["/node_modules/"]
+    // }
+  }
 })
