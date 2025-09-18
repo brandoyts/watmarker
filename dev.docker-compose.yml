@@ -34,7 +34,5 @@ services:
     volumes:
       - ./microservice/web_app/:/app
       - ./microservice_web_app/.env.development:/.env.development
-    # environment:
-    #   - VITE_API_BASE_URL=http://api-gateway:8080
     depends_on:
       - api-gateway
