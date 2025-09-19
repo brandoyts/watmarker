@@ -36,7 +36,7 @@ jobs:
         if: ${{ steps.load.outputs.api_gateway == 'true' || steps.load.outputs.common_code == 'true' }}
         run: |
           az containerapp update \
-            --name watmarker-api-gateway \
+            --name api-gateway \
             --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
             --image ${{ secrets.DOCKER_HUB_USERNAME }}/watmarker-api-gateway:${{ github.sha }}
 
@@ -44,6 +44,6 @@ jobs:
         if: ${{ steps.load.outputs.watermark_service == 'true' || steps.load.outputs.common_code == 'true' }}
         run: |
           az containerapp update \
-            --name watmarker-watermark \
+            --name watermark \
             --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
             --image ${{ secrets.DOCKER_HUB_USERNAME }}/watmarker-watermark:${{ github.sha }}
