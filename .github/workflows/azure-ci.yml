@@ -14,12 +14,39 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Install GitHub CLI
+        run: sudo apt-get install gh -y
+
       - name: Download Changed Services Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: changed-services
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Get artifacts for the triggering workflow run
+          run_id=${{ github.event.workflow_run.id }}
+          echo "Fetching artifacts for run_id=$run_id"
+
+          artifacts_url="https://api.github.com/repos/${{ github.repository }}/actions/runs/$run_id/artifacts"
+          echo "Artifacts URL: $artifacts_url"
+
+          # Find artifact ID for 'changed-services'
+          artifact_id=$(gh api "$artifacts_url" --jq '.artifacts[] | select(.name=="changed-services") | .id')
+
+          if [ -z "$artifact_id" ]; then
+            echo "No changed-services artifact found. Skipping deployment."
+            echo "skip_deploy=true" >> $GITHUB_ENV
+            exit 0
+          fi
+
+          echo "Found artifact ID: $artifact_id"
+          gh api \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${{ github.repository }}/actions/artifacts/$artifact_id/zip" \
+            > artifact.zip
+
+          unzip artifact.zip
 
       - name: Load Changed Services
+        if: env.skip_deploy != 'true'
         id: load
         run: |
           source changed-services.env
@@ -28,22 +55,23 @@ jobs:
           echo "common_code=$common_code" >> $GITHUB_OUTPUT
 
       - name: Log in to Azure
+        if: env.skip_deploy != 'true'
         uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Deploy API Gateway
-        if: ${{ steps.load.outputs.api_gateway == 'true' || steps.load.outputs.common_code == 'true' }}
+        if: env.skip_deploy != 'true' && (steps.load.outputs.api_gateway == 'true' || steps.load.outputs.common_code == 'true')
         run: |
           az containerapp update \
-            --name api-gateway \
+            --name watmarker-api-gateway \
             --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-            --image ${{ secrets.DOCKER_HUB_USERNAME }}/watmarker-api-gateway:${{ github.sha }}
+            --image ${{ secrets.DOCKER_HUB_USERNAME }}/watmarker-api-gateway:${{ github.event.workflow_run.head_sha }}
 
       - name: Deploy Watermark Service
-        if: ${{ steps.load.outputs.watermark_service == 'true' || steps.load.outputs.common_code == 'true' }}
+        if: env.skip_deploy != 'true' && (steps.load.outputs.watermark_service == 'true' || steps.load.outputs.common_code == 'true')
         run: |
           az containerapp update \
-            --name watermark \
+            --name watmarker-watermark \
             --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-            --image ${{ secrets.DOCKER_HUB_USERNAME }}/watmarker-watermark:${{ github.sha }}
+            --image ${{ secrets.DOCKER_HUB_USERNAME }}/watmarker-watermark:${{ github.event.workflow_run.head_sha }}
