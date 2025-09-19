@@ -59,3 +59,17 @@ jobs:
           tags: |
             ${{ secrets.DOCKER_HUB_USERNAME }}/watmarker-watermark:latest
             ${{ secrets.DOCKER_HUB_USERNAME }}/watmarker-watermark:${{ github.sha }}
+
+      # Store filter results for Azure CI
+      - name: Save Changed Services
+        run: |
+          echo "api_gateway=${{ steps.filter.outputs.api_gateway }}" >> changed-services.env
+          echo "watermark_service=${{ steps.filter.outputs.watermark_service }}" >> changed-services.env
+          echo "common_code=${{ steps.filter.outputs.common_code }}" >> changed-services.env
+        shell: bash
+
+      - name: Upload Changed Services Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: changed-services
+          path: changed-services.env
