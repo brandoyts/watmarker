@@ -28,3 +28,7 @@ push api gateway image:
 push watermark image:
 	docker build -t doyts/watmarker-watermark -f microservice/watermark_service/Dockerfile .
 	docker push doyts/watmarker-watermark
+
+push webapp image:
+	docker build -t doyts/watmarker-web-app -f microservice/web_app/prod.Dockerfile ./microservice/web_app/
+	docker push doyts/watmarker-web-app
