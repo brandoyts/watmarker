@@ -9,20 +9,18 @@ RUN npm ci --omit=dev
 
 COPY . .
 
-ARG VITE_API_BASE_URL
-ENV VITE_API_BASE_URL=${VITE_API_BASE_URL}
-
 RUN npm run build
 
 # production stage
 FROM nginx:1.25-alpine
 
-# install CA certificates (for HTTPS)
-RUN apk add --no-cache ca-certificates
-
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx/conf.d/default.conf.template /etc/nginx/conf.d/default.conf.template
+
+# add startup script
+COPY entrypoint.sh /docker-entrypoint.d/99-replace-env.sh
+RUN chmod +x /docker-entrypoint.d/99-replace-env.sh
 
 RUN chmod -R 755 /usr/share/nginx/html
 
