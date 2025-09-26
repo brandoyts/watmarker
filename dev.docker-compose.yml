@@ -25,6 +25,7 @@ services:
 
   web-app:
     container_name: web-app
+    working_dir: /app
     image: doyts/watmarker-web-app
     build:
       context: ./microservice/web_app
@@ -32,7 +33,8 @@ services:
     ports:
       - 3000:5173
     volumes:
+      - /app/node_modules
       - ./microservice/web_app/:/app
-      - ./microservice_web_app/.env.development:/.env.development
+      - ./microservice/web_app/.env:/.env:rw
     depends_on:
       - api-gateway

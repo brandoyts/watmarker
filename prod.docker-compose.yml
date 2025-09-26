@@ -27,12 +27,11 @@ services:
     container_name: web-app
     image: doyts/watmarker-web-app
     build:
-      args:
-        - VITE_API_BASE_URL=${VITE_API_BASE_URL}
       context: ./microservice/web_app
       dockerfile: prod.Dockerfile
+    environment:
+      - API_BASE_URL=http://api-gateway:8080
     ports:
       - 3000:80
-      - 3001:443
     depends_on:
       - api-gateway
